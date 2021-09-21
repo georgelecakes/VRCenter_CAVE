@@ -12,10 +12,7 @@ public class FlystickInteractionManager : InteractionManager
     {
         Interactable interactable = DetectInterest();
 
-        if (interactable)
-        {
-            HandleInterest(interactable);
-        }
+        HandleInterest(interactable);
 
         if(DetectSelection())
         {
@@ -51,11 +48,34 @@ public class FlystickInteractionManager : InteractionManager
 
     public override void HandleInterest(Interactable interactable)
     {
+        //We are hitting nothing
+        if (interactable == null)
+        {
+            if (interestObject != null)
+            {
+                interestObject.OnDeinterest();
+                interestObject = null;
+            }
+            return;
+        }
+        //We are hitting something
+        else
+        {
+            //We have something selected
+            if(interactable == selectedObject)
+            {
+                //do nothing, this object is already selected
+                return;
+            }
+        }
+
+        //There was no prior object of interest
         if(!interestObject)
         {
             interestObject = interactable;
             interactable.OnInterest();
         }
+        //We have a prior of interest and need to turn it off
         else
         {
             if(interestObject != interactable)
@@ -65,6 +85,28 @@ public class FlystickInteractionManager : InteractionManager
                 interestObject.OnInterest();
             }
         }
+    }
+
+    private void OnGUI()
+    {
+        GUILayout.BeginVertical();
+        if (this.interestObject != null)
+        {
+            GUILayout.Label("Interest: " + this.interestObject.name);
+        }
+        else
+        {
+            GUILayout.Label("Interest: " + "None");
+        }
+        if (this.selectedObject != null)
+        {
+            GUILayout.Label("Selected: " + this.selectedObject.name);
+        }
+        else
+        {
+            GUILayout.Label("Selected: " + "None");
+        }
+        GUILayout.EndVertical();
     }
 
     public override void HandleSelection()
@@ -81,9 +123,10 @@ public class FlystickInteractionManager : InteractionManager
             {
                 selectedObject.OnDeselect();
             }
-
             selectedObject = interestObject;
+            interestObject = null;
             selectedObject.OnSelect();
+            
 
         }
         //No object of interest, this is a reset to deselect
