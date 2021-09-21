@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class StandardInteractable : Interactable
 {
-
-
     public override void OnSelect()
     {
         foreach (MeshRenderer mr in meshRenderers)

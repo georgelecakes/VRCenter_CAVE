@@ -5,8 +5,10 @@ using UnityEngine;
 public class FlystickInteractionManager : InteractionManager
 {
     public Transform flystickBody = null;
-    [SerializeField] LayerMask layerMask;
-    [SerializeField] float raycastDistance = 50.0f;
+    [SerializeField]
+    protected LayerMask layerMask;
+    [SerializeField]
+    protected float raycastDistance = 50.0f;
 
     protected override void Update()
     {
@@ -23,7 +25,8 @@ public class FlystickInteractionManager : InteractionManager
     public override Interactable DetectInterest()
     {
         Ray ray = new Ray(flystickBody.position,
-                    flystickBody.forward);
+                            flystickBody.forward);
+
         RaycastHit hitInfo;
 
         if (Physics.Raycast(ray, out hitInfo, raycastDistance, layerMask))
@@ -87,7 +90,7 @@ public class FlystickInteractionManager : InteractionManager
         }
     }
 
-    private void OnGUI()
+    protected virtual void OnGUI()
     {
         GUILayout.BeginVertical();
         if (this.interestObject != null)

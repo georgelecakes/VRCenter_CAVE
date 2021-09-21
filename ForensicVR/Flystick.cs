@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Flystick : MonoBehaviour
 {
-
-    Vector3 worldPoint = new Vector3();
+    Vector3 worldPointNear = new Vector3();
+    Vector3 worldPointFar = new Vector3();
 
     void Start()
     {
@@ -19,10 +19,13 @@ public class Flystick : MonoBehaviour
 
     protected void PointAt()
     {
-        Vector2 mousePos = Input.mousePosition;
-        worldPoint = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Camera.main.nearClipPlane));
- 
-        this.transform.LookAt(worldPoint);
+        Vector3 mousePosNear = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane);
+        Vector3 mousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
+
+        worldPointNear = Camera.main.ScreenToWorldPoint(mousePosNear);
+        worldPointFar = Camera.main.ScreenToWorldPoint(mousePosFar);
+        this.transform.position = worldPointNear;
+        this.transform.LookAt(worldPointFar);
     }
 
     private void OnDrawGizmos()
@@ -32,7 +35,10 @@ public class Flystick : MonoBehaviour
 
         Color temp = Gizmos.color;
         Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(worldPoint, 0.1f);
+        Gizmos.DrawSphere(worldPointNear, 0.1f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(worldPointFar, 0.1f);
+
         Gizmos.color = temp;
 
     }
